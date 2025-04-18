@@ -78,7 +78,7 @@ VoiceUp is a modern, AI-powered web application designed to streamline communica
 
 ```bash
 # Clone the repository
-git clone https://github.com/prasanth-42/VoiceUp.git
+git clone https://github.com/prasanth-42/VoiceUp-portal.git
 
 # Install dependencies
 npm install
