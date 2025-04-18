@@ -1,0 +1,1052 @@
+<%- contentFor('body') %>
+    <div class="home-container">
+        <!-- Chat Bot Widget -->
+        <div class="chat-container" id="chat-container" style="display: none;">
+            <div class="chat-header">
+                <h3>Government Grievance Assistant</h3>
+                <button class="chat-close" id="chat-close">&times;</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message bot">
+                    <p>Hello! I'm your VoiceUp Assistant. I can help you with:</p>
+                    <ul class="suggestion-list">
+                        <li>Filing complaints</li>
+                        <li>Finding the right department</li>
+                        <li>Understanding government schemes</li>
+                        <li>Tracking your grievances</li>
+                    </ul>
+                    <p>How can I assist you today?</p>
+                    <div class="suggested-questions">
+                        <button class="suggestion-btn" data-question="How do I file a complaint?">How do I file a
+                            complaint?</button>
+                        <button class="suggestion-btn"
+                            data-question="Which department should I contact for road repairs?">Which department for
+                            road repairs?</button>
+                        <button class="suggestion-btn" data-question="What is PM Awas Yojana?">What is PM Awas
+                            Yojana?</button>
+                        <button class="suggestion-btn" data-question="How can I track my complaint status?">How to track
+                            my complaint?</button>
+                        <button class="suggestion-btn"
+                            data-question="Tell me about government schemes for healthcare">Healthcare schemes</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
+                <button class="send-button" id="send-button">Send</button>
+            </div>
+        </div>
+
+        <button class="chat-toggle" id="chat-toggle">
+            <div class="chat-toggle-content">
+                <img src="./images/bot.png" alt="Bot Logo" class="chat-toggle-logo" />
+            </div>
+            <div class="chat-toggle-pulse"></div>
+        </button>
+        
+        
+
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">"A Brave Heart Dares to Question Injustice"</h1>
+                <p class="hero-subtitle">Here is your one-stop platform for government services and information</p>
+
+                <div class="hero-actions">
+                    <% if (locals.user) { %>
+                        <a href="/complaints" class="btn btn-primary">File a Complaint</a>
+                        <% } else { %>
+                            <a href="/login" class="btn btn-primary">Login</a>
+                            <a href="/create" class="btn btn-secondary">Register</a>
+                            <% } %>
+                </div>
+            </div>
+        </section>
+
+        <% if (locals.error) { %>
+            <div class="alert alert-danger">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="alert-content">
+                    <%= error %>
+                </div>
+            </div>
+            <% } %>
+
+                <section class="features-section">
+                    <h2 class="section-title">Our Services</h2>
+                    <div class="complaint-feature">
+                        <div class="feature-highlight">
+                            <div class="feature-icon">📢</div>
+                            <h3 class="feature-title">File Complaints</h3>
+                            <p class="feature-description">Submit and track your complaints for faster resolution with
+                                our streamlined complaint system</p>
+                            <div class="feature-benefits">
+                                <div class="benefit">
+                                    <span class="benefit-icon">✓</span>
+                                    <span class="benefit-text">Quick Submission</span>
+                                </div>
+                                <div class="benefit">
+                                    <span class="benefit-icon">✓</span>
+                                    <span class="benefit-text">Real-time Tracking</span>
+                                </div>
+                                <div class="benefit">
+                                    <span class="benefit-icon">✓</span>
+                                    <span class="benefit-text">Efficient Resolution</span>
+                                </div>
+                            </div>
+                            <a href="/complaints" class="feature-button">File a Complaint</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="tracking-section">
+                    <div class="tracking-container">
+                        <div class="tracking-content">
+                            <h2 class="section-title">Track Your Application Status</h2>
+                            <p class="tracking-description">Check the status of your submitted applications in real-time
+                            </p>
+
+                            <div class="tracking-form">
+                                <form action="/track-status" method="POST" class="status-form">
+                                    <div class="form-group">
+                                        <label for="trackingId">Tracking ID</label>
+                                        <input type="text" id="trackingId" name="trackingId"
+                                            placeholder="Enter your complaint tracking ID" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Track Status</button>
+                                </form>
+                            </div>
+
+                            <div class="tracking-info">
+                                <div class="tracking-card">
+                                    <div class="tracking-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="tracking-text">
+                                        <h3>Real-time Updates</h3>
+                                        <p>Get instant updates on your application status</p>
+                                    </div>
+                                </div>
+                                <div class="tracking-card">
+                                    <div class="tracking-icon">
+                                        <i class="fas fa-history"></i>
+                                    </div>
+                                    <div class="tracking-text">
+                                        <h3>Status History</h3>
+                                        <p>View the complete history of your application</p>
+                                    </div>
+                                </div>
+                                <div class="tracking-card">
+                                    <div class="tracking-icon">
+                                        <i class="fas fa-bell"></i>
+                                    </div>
+                                    <div class="tracking-text">
+                                        <h3>Status Notifications</h3>
+                                        <p>Receive notifications when your status changes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-section">
+                    <div class="info-content">
+                        <h2 class="section-title">About the Portal</h2>
+                        <p class="info-text">
+                            The Government Portal provides citizens with easy access to government services and
+                            information.
+                            Our platform is designed to streamline administrative processes and improve communication
+                            between
+                            citizens and government agencies. Experience the convenience of managing your
+                            government-related
+                            tasks from the comfort of your home.
+                        </p>
+                        <div class="info-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">24/7</span>
+                                <span class="stat-label">Service Access</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Secure</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">Fast</span>
+                                <span class="stat-label">Processing</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+
+                <section class="help-section">
+                    <h2 class="help-title">Need Assistance?</h2>
+                    <p class="help-description">Our support team is available to help you file and track your
+                        complaints.</p>
+                    <div class="support-options">
+                        <div class="support-option">
+                            <div class="icon-container">📧</div>
+                            <h3 class="option-title">Email Support</h3>
+                            <p class="option-detail">support@voiceup.gov</p>
+                        </div>
+                        <div class="support-option">
+                            <div class="icon-container">📞</div>
+                            <h3 class="option-title">Phone Support</h3>
+                            <p class="option-detail">1-800-GOV-HELP</p>
+                        </div>
+                        <div class="support-option">
+                            <div class="icon-container">💬</div>
+                            <h3 class="option-title">Live Chat</h3>
+                            <p class="option-detail">Available 9 AM - 5 PM</p>
+                        </div>
+                    </div>
+                </section>
+
+                <style>
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    .process-section,
+                    .help-section {
+                        max-width: 900px;
+                        margin: 40px auto;
+                        background: white;
+                        padding: 30px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .process-title,
+                    .help-title {
+                        text-align: center;
+                        font-size: 24px;
+                        color: #333;
+                        margin-bottom: 20px;
+                    }
+
+                    .steps-container {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                        gap: 20px;
+                        text-align: center;
+                    }
+
+                    .step {
+                        background: #f9f9f9;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                        transition: transform 0.2s ease-in-out;
+                    }
+
+                    .step:hover {
+                        transform: translateY(-5px);
+                    }
+
+                    .step-number {
+                        font-size: 20px;
+                        font-weight: bold;
+                        color: white;
+                        background: #007BFF;
+                        padding: 10px 15px;
+                        border-radius: 50%;
+                        display: inline-block;
+                        margin-bottom: 10px;
+                    }
+
+                    .help-description {
+                        text-align: center;
+                        margin-bottom: 20px;
+                    }
+
+                    .support-options {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 20px;
+                        justify-content: center;
+                    }
+
+                    .support-option {
+                        background: #fff;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+                        text-align: center;
+                        width: 250px;
+                        transition: 0.3s;
+                    }
+
+                    .support-option:hover {
+                        transform: translateY(-5px);
+                    }
+
+                    .icon-container {
+                        font-size: 30px;
+                        margin-bottom: 10px;
+                    }
+
+                    .option-title {
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+
+                    .option-detail {
+                        font-size: 14px;
+                        color: #666;
+                    }
+                </style>
+
+
+                <%- contentFor('style') %>
+                    <style>
+                        .home-container {
+                            padding: 2rem;
+                            max-width: 1200px;
+                            margin: 0 auto;
+                        }
+
+                        .hero-section {
+                            background: linear-gradient(135deg, var(--primary-color), #5a002f);
+                            border-radius: var(--border-radius);
+                            margin-bottom: 3rem;
+                            padding: 4rem 2rem;
+                            color: white;
+                            text-align: center;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .hero-section::before {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="rgba(255,255,255,0.05)"/></svg>');
+                            opacity: 0.1;
+                        }
+
+                        .hero-content {
+                            position: relative;
+                            z-index: 1;
+                        }
+
+                        .hero-title {
+                            font-size: 3rem;
+                            font-weight: bold;
+                            margin-bottom: 1rem;
+                            color: white;
+                        }
+
+                        .hero-subtitle {
+                            font-size: 1.25rem;
+                            margin-bottom: 2rem;
+                            color: rgba(255, 255, 255, 0.9);
+                        }
+
+                        .hero-actions {
+                            display: flex;
+                            justify-content: center;
+                            gap: 1rem;
+                        }
+
+                        .hero-actions .btn {
+                            padding: 0.75rem 2rem;
+                            font-size: 1.1rem;
+                            font-weight: 500;
+                        }
+
+                        .hero-actions .btn-secondary {
+                            background: rgba(255, 255, 255, 0.1);
+                            color: white;
+                            border: 1px solid rgba(255, 255, 255, 0.2);
+                        }
+
+                        .hero-actions .btn-secondary:hover {
+                            background: rgba(255, 255, 255, 0.2);
+                        }
+
+                        .section-title {
+                            font-size: 2rem;
+                            font-weight: bold;
+                            text-align: center;
+                            margin-bottom: 2rem;
+                            color: var(--text-color);
+                        }
+
+                        .features-section {
+                            margin-bottom: 3rem;
+                        }
+
+                        .complaint-feature {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                        }
+
+                        .feature-highlight {
+                            background: white;
+                            border-radius: 12px;
+                            padding: 3rem;
+                            text-align: center;
+                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                            box-shadow: 0 10px 30px rgba(115, 0, 59, 0.1);
+                            max-width: 600px;
+                            width: 100%;
+                            position: relative;
+                            overflow: hidden;
+                        }
+
+                        .feature-highlight:before {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 8px;
+                            background: linear-gradient(90deg, #3f8d91, #541a3b);
+                        }
+
+                        .feature-highlight:hover {
+                            transform: translateY(-10px);
+                            box-shadow: 0 15px 40px rgba(115, 0, 59, 0.2);
+                        }
+
+                        .feature-icon {
+                            font-size: 4rem;
+                            color: #3f8d91;
+                            margin-bottom: 1.5rem;
+                            display: inline-block;
+                            animation: pulse 2s infinite;
+                        }
+
+                        @keyframes pulse {
+                            0% {
+                                transform: scale(1);
+                            }
+
+                            50% {
+                                transform: scale(1.1);
+                            }
+
+                            100% {
+                                transform: scale(1);
+                            }
+                        }
+
+                        .feature-title {
+                            font-size: 2.2rem;
+                            font-weight: 700;
+                            color: #333;
+                            margin-bottom: 1rem;
+                        }
+
+                        .feature-description {
+                            font-size: 1.2rem;
+                            color: #555;
+                            line-height: 1.6;
+                            margin-bottom: 2rem;
+                        }
+
+                        .feature-benefits {
+                            display: flex;
+                            flex-wrap: wrap;
+                            justify-content: center;
+                            gap: 1.5rem;
+                            margin-bottom: 2rem;
+                        }
+
+                        .benefit {
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                        }
+
+                        .benefit-icon {
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            width: 24px;
+                            height: 24px;
+                            border-radius: 50%;
+                            background: #3f8d91;
+                            color: white;
+                            font-size: 0.8rem;
+                            font-weight: bold;
+                        }
+
+                        .benefit-text {
+                            font-size: 1.1rem;
+                            color: #333;
+                            font-weight: 500;
+                        }
+
+                        .feature-button {
+                            display: inline-block;
+                            background: #3f8d91;
+                            color: white;
+                            padding: 1rem 2.5rem;
+                            border-radius: 50px;
+                            font-size: 1.2rem;
+                            font-weight: 600;
+                            text-decoration: none;
+                            transition: all 0.3s ease;
+                            border: none;
+                            cursor: pointer;
+                            box-shadow: 0 5px 15px rgba(0, 107, 115, 0.3);
+                        }
+
+                        .feature-button:hover {
+                            background: #04393c;
+                            transform: translateY(-3px);
+                            box-shadow: 0 8px 20px rgba(0, 115, 113, 0.4);
+                        }
+
+                        .feature-card {
+                            background: var(--card-bg);
+                            border-radius: var(--border-radius);
+                            padding: 2rem;
+                            text-align: center;
+                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                            box-shadow: var(--card-shadow);
+                        }
+
+                        .feature-card:hover {
+                            transform: translateY(-5px);
+                            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                        }
+
+                        .tracking-section {
+                            margin-bottom: 3rem;
+                            background-color: #f8f9fa;
+                            border-radius: var(--border-radius);
+                            overflow: hidden;
+                        }
+
+                        .tracking-container {
+                            padding: 3rem 2rem;
+                            max-width: 1200px;
+                            margin: 0 auto;
+                        }
+
+                        .tracking-content {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            text-align: center;
+                        }
+
+                        .tracking-description {
+                            max-width: 600px;
+                            margin: 0 auto 2rem;
+                            color: var(--text-muted);
+                            font-size: 1.1rem;
+                        }
+
+                        .tracking-form {
+                            background: white;
+                            padding: 2rem;
+                            border-radius: var(--border-radius);
+                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                            width: 100%;
+                            max-width: 500px;
+                            margin-bottom: 2rem;
+                        }
+
+                        .status-form {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 1.5rem;
+                        }
+
+                        .form-group {
+                            display: flex;
+                            flex-direction: column;
+                            text-align: left;
+                        }
+
+                        .form-group label {
+                            margin-bottom: 0.5rem;
+                            font-weight: 500;
+                            color: var(--text-color);
+                        }
+
+                        .form-group input {
+                            padding: 0.75rem;
+                            border: 1px solid #ddd;
+                            border-radius: var(--border-radius);
+                            font-size: 1rem;
+                            transition: border-color 0.3s;
+                        }
+
+                        .form-group input:focus {
+                            border-color: var(--primary-color);
+                            outline: none;
+                        }
+
+                        .tracking-info {
+                            display: flex;
+                            justify-content: center;
+                            gap: 2rem;
+                            flex-wrap: wrap;
+                            margin-top: 1rem;
+                        }
+
+                        .tracking-card {
+                            display: flex;
+                            align-items: center;
+                            background: white;
+                            padding: 1.5rem;
+                            border-radius: var(--border-radius);
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                            width: 100%;
+                            max-width: 300px;
+                        }
+
+                        .tracking-icon {
+                            font-size: 1.5rem;
+                            color: var(--primary-color);
+                            margin-right: 1rem;
+                            width: 40px;
+                            height: 40px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            background: rgba(var(--primary-rgb), 0.1);
+                            border-radius: 50%;
+                        }
+
+                        .tracking-text {
+                            text-align: left;
+                        }
+
+                        .tracking-text h3 {
+                            margin: 0 0 0.5rem;
+                            font-size: 1.1rem;
+                            color: var(--text-color);
+                        }
+
+                        .tracking-text p {
+                            margin: 0;
+                            color: var(--text-muted);
+                            font-size: 0.9rem;
+                        }
+
+                        .info-section {
+                            background: var(--card-bg);
+                            border-radius: var(--border-radius);
+                            padding: 3rem 2rem;
+                            margin-bottom: 3rem;
+                            box-shadow: var(--card-shadow);
+                        }
+
+                        .info-content {
+                            max-width: 800px;
+                            margin: 0 auto;
+                            text-align: center;
+                        }
+
+                        .info-text {
+                            color: var(--text-muted);
+                            line-height: 1.8;
+                            margin-bottom: 2rem;
+                            font-size: 1.1rem;
+                        }
+
+                        .info-stats {
+                            display: flex;
+                            justify-content: space-around;
+                            margin-top: 2rem;
+                        }
+
+                        .stat-item {
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            gap: 0.5rem;
+                        }
+
+                        .stat-number {
+                            font-size: 2rem;
+                            font-weight: bold;
+                            color: var(--primary-color);
+                        }
+
+                        .stat-label {
+                            color: var(--text-muted);
+                            font-size: 1rem;
+                        }
+
+                        @media (max-width: 768px) {
+                            .hero-title {
+                                font-size: 2.5rem;
+                            }
+
+                            .hero-subtitle {
+                                font-size: 1.1rem;
+                            }
+
+                            .hero-actions {
+                                flex-direction: column;
+                            }
+
+                            .hero-actions .btn {
+                                width: 100%;
+                            }
+
+                            .features-section {
+                                flex-direction: column;
+                            }
+
+                            .info-stats {
+                                grid-template-columns: 1fr;
+                            }
+
+                            .tracking-container {
+                                padding: 2rem 1rem;
+                            }
+
+                            .tracking-info {
+                                flex-direction: column;
+                                align-items: center;
+                            }
+
+                            .tracking-card {
+                                width: 100%;
+                            }
+                        }
+
+                        .alert {
+                            display: flex;
+                            align-items: center;
+                            padding: 1rem;
+                            margin-bottom: 2rem;
+                            border-radius: var(--border-radius);
+                        }
+
+                        .alert-danger {
+                            background-color: #f8d7da;
+                            color: #721c24;
+                            border: 1px solid #f5c6cb;
+                        }
+
+                        .alert-icon {
+                            margin-right: 1rem;
+                            font-size: 1.25rem;
+                        }
+
+                        .alert-content {
+                            flex: 1;
+                        }
+
+                        .chat-container {
+                            position: fixed;
+                            bottom: 20px;
+                            right: 20px;
+                            width: 350px;
+                            height: 500px;
+                            background: white;
+                            border-radius: 10px;
+                            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                            display: none;
+                            flex-direction: column;
+                            z-index: 1000;
+                        }
+
+                        .chat-container.active {
+                            display: flex;
+                        }
+
+                        .chat-header {
+                            padding: 15px;
+                            background: #007bff;
+                            color: white;
+                            border-radius: 10px 10px 0 0;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        }
+
+                        .chat-close {
+                            background: none;
+                            border: none;
+                            color: white;
+                            font-size: 24px;
+                            cursor: pointer;
+                        }
+
+                        .chat-messages {
+                            flex: 1;
+                            padding: 15px;
+                            overflow-y: auto;
+                        }
+
+                        .message {
+                            margin-bottom: 10px;
+                            padding: 10px;
+                            border-radius: 10px;
+                            max-width: 80%;
+                        }
+
+                        .message.user {
+                            background: #007bff;
+                            color: white;
+                            margin-left: auto;
+                        }
+
+                        .message.bot {
+                            background: #f0f0f0;
+                            color: #333;
+                        }
+
+                        .chat-input-container {
+                            padding: 15px;
+                            border-top: 1px solid #eee;
+                            display: flex;
+                            gap: 10px;
+                        }
+
+                        .chat-input {
+                            flex: 1;
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                            border-radius: 5px;
+                        }
+
+                        .send-button {
+                            padding: 10px 20px;
+                            background: #007bff;
+                            color: white;
+                            border: none;
+                            border-radius: 5px;
+                            cursor: pointer;
+                        }
+
+                                                .chat-toggle {
+                            position: fixed;
+                            bottom: 20px;
+                            right: 20px;
+                            width: 56px;
+                            height: 56px;
+                            background: #3f8d91;
+                            border: none;
+                            border-radius: 50%;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            box-shadow: 0 4px 15px rgba(78, 197, 218, 0.238);
+                            z-index: 999;
+                            transition: all 0.3s ease;
+                            padding: 0;
+                            overflow: hidden;
+                        }
+
+                        .chat-toggle-logo {
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            pointer-events: none;
+                        }
+
+
+                        .chat-toggle-content {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            position: relative;
+                            z-index: 2;
+                        }
+
+                        .chat-toggle-text {
+                            font-weight: 500;
+                            white-space: nowrap;
+                        }
+
+                        .chat-toggle:hover {
+                            background: #37c7d6;
+                            transform: translateY(-2px);
+                            box-shadow: 0 6px 20px rgba(0, 115, 107, 0.3);
+                        }
+                        
+
+
+
+                        .chat-toggle-pulse {
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            background: rgba(255, 255, 255, 0.1);
+                            border-radius: 24px;
+                            z-index: 1;
+                            animation: pulse 2s infinite;
+                        }
+
+                        @keyframes pulse {
+                            0% {
+                                transform: scale(1);
+                                opacity: 0.5;
+                            }
+
+                            50% {
+                                transform: scale(1.05);
+                                opacity: 0.2;
+                            }
+
+                            100% {
+                                transform: scale(1);
+                                opacity: 0.5;
+                            }
+                        }
+
+                        @media (max-width: 768px) {
+                            .chat-toggle {
+                                min-width: auto;
+                                width: 48px;
+                                border-radius: 50%;
+                                padding: 0;
+                            }
+
+                            .chat-toggle-text {
+                                display: none;
+                            }
+
+                            .chat-toggle-pulse {
+                                border-radius: 50%;
+                            }
+                        }
+
+                        .suggestion-list {
+                            margin: 10px 0;
+                            padding-left: 20px;
+                        }
+
+                        .suggestion-list li {
+                            margin-bottom: 5px;
+                        }
+
+                        .suggested-questions {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 8px;
+                            margin-top: 10px;
+                        }
+
+                        .suggestion-btn {
+                            background: #e3f2fd;
+                            color: #1976d2;
+                            border: none;
+                            border-radius: 16px;
+                            padding: 6px 12px;
+                            font-size: 0.85rem;
+                            cursor: pointer;
+                            transition: background 0.2s;
+                        }
+
+                        .suggestion-btn:hover {
+                            background: #bbdefb;
+                        }
+                    </style>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const chatContainer = document.getElementById('chat-container');
+                            const chatToggle = document.getElementById('chat-toggle');
+                            const chatClose = document.getElementById('chat-close');
+                            const chatInput = document.getElementById('chat-input');
+                            const sendButton = document.getElementById('send-button');
+                            const chatMessages = document.getElementById('chat-messages');
+
+                            // Toggle chat visibility
+                            chatToggle.addEventListener('click', () => {
+                                chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+                            });
+
+                            chatClose.addEventListener('click', () => {
+                                chatContainer.style.display = 'none';
+                            });
+
+                            function addMessage(message, isUser) {
+                                const messageDiv = document.createElement('div');
+                                messageDiv.classList.add('message');
+                                messageDiv.classList.add(isUser ? 'user' : 'bot');
+
+                                // Format message with line breaks
+                                const formattedMessage = message.replace(/\n/g, '<br>');
+                                messageDiv.innerHTML = `<p>${formattedMessage}</p>`;
+
+                                chatMessages.appendChild(messageDiv);
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            }
+
+                            async function sendMessage() {
+                                const message = chatInput.value.trim();
+                                if (!message) return;
+
+                                // Disable input while processing
+                                chatInput.disabled = true;
+                                sendButton.disabled = true;
+
+                                addMessage(message, true);
+                                chatInput.value = '';
+
+                                try {
+                                    const response = await fetch('/chat', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({ message }),
+                                    });
+
+                                    const data = await response.json();
+
+                                    if (!response.ok) {
+                                        throw new Error(data.error || 'Failed to get response');
+                                    }
+
+                                    if (data.response) {
+                                        addMessage(data.response, false);
+                                    } else {
+                                        throw new Error('No response from server');
+                                    }
+                                } catch (error) {
+                                    console.error('Chat error:', error);
+                                    addMessage('I apologize, but I encountered an error processing your request. Please try again in a moment.', false);
+                                } finally {
+                                    // Re-enable input
+                                    chatInput.disabled = false;
+                                    sendButton.disabled = false;
+                                    chatInput.focus();
+                                }
+                            }
+
+                            sendButton.addEventListener('click', sendMessage);
+                            chatInput.addEventListener('keypress', (e) => {
+                                if (e.key === 'Enter') {
+                                    sendMessage();
+                                }
+                            });
+
+                            // Add event listeners for suggestion buttons
+                            document.querySelectorAll('.suggestion-btn').forEach(button => {
+                                button.addEventListener('click', () => {
+                                    const question = button.getAttribute('data-question');
+                                    chatInput.value = question;
+                                    sendMessage();
+                                });
+                            });
+                        });
+                    </script>
+
+                    <link rel="stylesheet" href="/css/chatbot.css">
+                    <link rel="stylesheet" href="/css/chatbot.css">

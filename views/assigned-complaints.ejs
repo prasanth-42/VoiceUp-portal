@@ -1,0 +1,360 @@
+<%- contentFor('body') %>
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">My Assigned Complaints</h1>
+    <a href="/profile" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition duration-200">
+      Back to Profile
+    </a>
+  </div>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+      <span class="block sm:inline"><%= error %></span>
+    </div>
+  <% } %>
+
+  <% if (complaints.length === 0) { %>
+    <div class="bg-gray-100 p-6 rounded-lg text-center">
+      <p class="text-gray-600 text-lg">You don't have any assigned complaints yet.</p>
+    </div>
+  <% } else { %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% complaints.forEach(complaint => { %>
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <h2 class="text-xl font-semibold text-gray-800"><%= complaint.title %></h2>
+              <span class="px-3 py-1 rounded-full text-sm font-medium
+                <%= complaint.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                   complaint.status === 'PROCESSING' ? 'bg-blue-100 text-blue-800' :
+                   complaint.status === 'RESOLVED' ? 'bg-green-100 text-green-800' :
+                   'bg-red-100 text-red-800' %>">
+                <%= complaint.status %>
+              </span>
+            </div>
+            
+            <p class="text-gray-600 mb-4"><%= complaint.description %></p>
+            
+            <div class="space-y-2 mb-4">
+              <div class="flex items-center text-gray-600">
+                <i class="fas fa-map-marker-alt w-5"></i>
+                <span class="ml-2"><%= complaint.location %></span>
+              </div>
+              <div class="flex items-center text-gray-600">
+                <i class="fas fa-tag w-5"></i>
+                <span class="ml-2"><%= complaint.category.replace('_', ' ') %></span>
+              </div>
+              <div class="flex items-center text-gray-600">
+                <i class="fas fa-clock w-5"></i>
+                <span class="ml-2">Created: <%= new Date(complaint.createdAt).toLocaleDateString() %></span>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-gray-500">
+                Tracking ID: <%= complaint.trackingId %>
+              </span>
+              <a href="/complaint/<%= complaint._id %>" 
+                 class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- contentFor('style') %>
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .flex {
+    display: flex;
+  }
+  
+  .justify-between {
+    justify-content: space-between;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .mb-6 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  
+  .font-bold {
+    font-weight: 700;
+  }
+  
+  .text-gray-800 {
+    color: #1f2937;
+  }
+  
+  .bg-gray-500 {
+    background-color: #6b7280;
+  }
+  
+  .hover\:bg-gray-600:hover {
+    background-color: #4b5563;
+  }
+  
+  .text-white {
+    color: #ffffff;
+  }
+  
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+  
+  .transition {
+    transition-property: background-color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+  
+  .duration-200 {
+    transition-duration: 200ms;
+  }
+  
+  .bg-red-100 {
+    background-color: #fee2e2;
+  }
+  
+  .border {
+    border-width: 1px;
+  }
+  
+  .border-red-400 {
+    border-color: #f87171;
+  }
+  
+  .text-red-700 {
+    color: #b91c1c;
+  }
+  
+  .px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  .rounded {
+    border-radius: 0.25rem;
+  }
+  
+  .relative {
+    position: relative;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .block {
+    display: block;
+  }
+  
+  .sm\:inline {
+    display: inline;
+  }
+  
+  .bg-gray-100 {
+    background-color: #f3f4f6;
+  }
+  
+  .p-6 {
+    padding: 1.5rem;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .grid {
+    display: grid;
+  }
+  
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .gap-6 {
+    gap: 1.5rem;
+  }
+  
+  .bg-white {
+    background-color: #ffffff;
+  }
+  
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+  
+  .shadow-md {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .overflow-hidden {
+    overflow: hidden;
+  }
+  
+  .p-6 {
+    padding: 1.5rem;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .font-semibold {
+    font-weight: 600;
+  }
+  
+  .px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .py-1 {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  
+  .rounded-full {
+    border-radius: 9999px;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .font-medium {
+    font-weight: 500;
+  }
+  
+  .bg-yellow-100 {
+    background-color: #fef3c7;
+  }
+  
+  .text-yellow-800 {
+    color: #92400e;
+  }
+  
+  .bg-blue-100 {
+    background-color: #dbeafe;
+  }
+  
+  .text-blue-800 {
+    color: #1e40af;
+  }
+  
+  .bg-green-100 {
+    background-color: #d1fae5;
+  }
+  
+  .text-green-800 {
+    color: #065f46;
+  }
+  
+  .bg-red-100 {
+    background-color: #fee2e2;
+  }
+  
+  .text-red-800 {
+    color: #991b1b;
+  }
+  
+  .space-y-2 > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .items-center {
+    align-items: center;
+  }
+  
+  .text-gray-600 {
+    color: #4b5563;
+  }
+  
+  .w-5 {
+    width: 1.25rem;
+  }
+  
+  .ml-2 {
+    margin-left: 0.5rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .text-gray-500 {
+    color: #6b7280;
+  }
+  
+  .bg-blue-500 {
+    background-color: #3b82f6;
+  }
+  
+  .hover\:bg-blue-600:hover {
+    background-color: #2563eb;
+  }
+  
+  @media (min-width: 768px) {
+    .md\:grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .lg\:grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style> 

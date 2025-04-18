@@ -1,0 +1,398 @@
+<%- contentFor('body') %>
+    <div class="status-container">
+        <div class="status-header">
+            <h1 class="status-title">Complaint Status</h1>
+            <a href="/" class="btn btn-outline">Back to Home</a>
+        </div>
+
+        <div class="status-card">
+            <div class="status-badge status-<%= complaint.status.toLowerCase() %>">
+                <%= complaint.status %>
+            </div>
+
+            <div class="status-details">
+                <div class="status-row">
+                    <div class="status-label">Tracking ID:</div>
+                    <div class="status-value tracking-id">
+                        <%= complaint.id %>
+                    </div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Title:</div>
+                    <div class="status-value">
+                        <%= complaint.title %>
+                    </div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Category:</div>
+                    <div class="status-value">
+                        <%= complaint.type %>
+                    </div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Location:</div>
+                    <div class="status-value">
+                        <%= complaint.location %>
+                    </div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Priority:</div>
+                    <div class="status-value priority-badge <%= complaint.priority %>">
+                        <%= complaint.priority %>
+                    </div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Description:</div>
+                    <div class="status-value">
+                        <%= complaint.description %>
+                    </div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Submitted Date:</div>
+                    <div class="status-value">
+                        <%= new Date(complaint.submittedDate).toLocaleDateString() %>
+                    </div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label">Last Updated:</div>
+                    <div class="status-value">
+                        <%= new Date(complaint.lastUpdated).toLocaleDateString() %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-timeline">
+                <h3>Complaint Timeline</h3>
+                <div class="timeline">
+                    <div class="timeline-item <%= complaint.status !== 'PENDING' ? 'completed' : 'active' %>">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                        <div class="timeline-content">
+                            <h4>Complaint Submitted</h4>
+                            <p>
+                                <%= new Date(complaint.submittedDate).toLocaleDateString() %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="timeline-item <%= complaint.status === 'PROCESSING' || complaint.status === 'RESOLVED' ? 'completed' : (complaint.status === 'PENDING' ? 'upcoming' : 'active') %>">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                        <div class="timeline-content">
+                            <h4>Complaint Received</h4>
+                            <p>
+                                <%= complaint.status !=='PENDING' ? new Date(complaint.submittedDate.getTime() +
+                                    86400000).toLocaleDateString() : 'Pending' %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="timeline-item <%= complaint.status === 'RESOLVED' ? 'completed' : (complaint.status === 'PROCESSING' ? 'active' : 'upcoming') %>">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-line"></div>
+                        <div class="timeline-content">
+                            <h4>Under Review</h4>
+                            <p>
+                                <%= complaint.status==='RESOLVED' || complaint.status==='PROCESSING' ? new
+                                    Date(complaint.submittedDate.getTime() + 172800000).toLocaleDateString() : 'Pending'
+                                    %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item <%= complaint.status === 'RESOLVED' ? 'completed' : 'upcoming' %>">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h4>Complaint Resolved</h4>
+                            <p>
+                                <%= complaint.status==='RESOLVED' ? new Date(complaint.lastUpdated).toLocaleDateString()
+                                    : 'Pending' %>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-actions">
+                <a href="/contact" class="btn btn-secondary">Contact Support</a>
+                <a href="/" class="btn btn-primary">Track Another Complaint</a>
+            </div>
+        </div>
+    </div>
+
+    <%- contentFor('style') %>
+        <style>
+            .status-container {
+                padding: 2rem;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .status-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+
+            .status-title {
+                color: var(--text-color);
+                font-size: 2rem;
+                font-weight: bold;
+                margin: 0;
+            }
+
+            .status-card {
+                background: white;
+                border-radius: var(--border-radius);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 2rem;
+                position: relative;
+            }
+
+            .status-badge {
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
+                padding: 0.5rem 1rem;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+            .status-pending {
+                background-color: #ffeeba;
+                color: #856404;
+            }
+
+            .status-processing {
+                background-color: #cce5ff;
+                color: #004085;
+            }
+
+            .status-resolved {
+                background-color: #d4edda;
+                color: #155724;
+            }
+
+            .status-rejected {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+
+            .status-details {
+                margin-bottom: 2rem;
+            }
+
+            .status-row {
+                display: flex;
+                margin-bottom: 1rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eee;
+            }
+
+            .status-row:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+
+            .status-label {
+                width: 150px;
+                font-weight: 600;
+                color: var(--text-muted);
+            }
+
+            .status-value {
+                flex: 1;
+                color: var(--text-color);
+            }
+
+            .status-timeline {
+                margin-top: 2rem;
+                padding: 1.5rem;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .status-timeline h3 {
+                color: #2c3e50;
+                margin-bottom: 1.5rem;
+                font-size: 1.25rem;
+            }
+
+            .timeline {
+                position: relative;
+                padding-left: 2rem;
+            }
+
+            .timeline-item {
+                position: relative;
+                padding-bottom: 2rem;
+            }
+
+            .timeline-item:last-child {
+                padding-bottom: 0;
+            }
+
+            .timeline-dot {
+                position: absolute;
+                left: -1.5rem;
+                top: 0;
+                width: 1rem;
+                height: 1rem;
+                border-radius: 50%;
+                background: #e9ecef;
+                border: 2px solid #dee2e6;
+                z-index: 2;
+            }
+
+            .timeline-line {
+                position: absolute;
+                left: -1rem;
+                top: 1rem;
+                width: 2px;
+                height: calc(100% - 1rem);
+                background: #dee2e6;
+            }
+
+            .timeline-item:last-child .timeline-line {
+                display: none;
+            }
+
+            .timeline-content {
+                padding-left: 1rem;
+            }
+
+            .timeline-content h4 {
+                color: #2c3e50;
+                margin: 0 0 0.25rem;
+                font-size: 1rem;
+            }
+
+            .timeline-content p {
+                color: #6c757d;
+                margin: 0;
+                font-size: 0.9rem;
+            }
+
+            .timeline-item.completed .timeline-dot {
+                background: #28a745;
+                border-color: #28a745;
+            }
+
+            .timeline-item.completed .timeline-line {
+                background: #28a745;
+            }
+
+            .timeline-item.active .timeline-dot {
+                background: #007bff;
+                border-color: #007bff;
+                animation: pulse 2s infinite;
+            }
+
+            .timeline-item.active .timeline-line {
+                background: linear-gradient(to bottom, #007bff, #dee2e6);
+            }
+
+            .timeline-item.upcoming .timeline-dot {
+                background: #e9ecef;
+                border-color: #dee2e6;
+            }
+
+            @keyframes pulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+                }
+
+                70% {
+                    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+                }
+
+                100% {
+                    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+                }
+            }
+
+            .status-actions {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 2rem;
+            }
+
+            .btn-outline {
+                background: transparent;
+                border: 1px solid var(--primary-color);
+                color: var(--primary-color);
+            }
+
+            .btn-outline:hover {
+                background: rgba(var(--primary-rgb), 0.1);
+            }
+
+            @media (max-width: 768px) {
+                .status-container {
+                    padding: 1rem;
+                }
+
+                .status-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                }
+
+                .status-row {
+                    flex-direction: column;
+                }
+
+                .status-label {
+                    width: 100%;
+                    margin-bottom: 0.5rem;
+                }
+
+                .status-actions {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .status-actions .btn {
+                    width: 100%;
+                }
+            }
+
+            .tracking-id {
+                font-family: monospace;
+                font-weight: bold;
+                color: #2c3e50;
+                background-color: #f8f9fa;
+                padding: 0.2rem 0.5rem;
+                border-radius: 4px;
+                border: 1px solid #dee2e6;
+            }
+
+            .priority-badge {
+                display: inline-block;
+                padding: 0.25rem 0.75rem;
+                border-radius: 12px;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .priority-badge.low {
+                background: #e8f5e9;
+                color: #388e3c;
+            }
+
+            .priority-badge.medium {
+                background: #fff3e0;
+                color: #f57c00;
+            }
+
+            .priority-badge.high {
+                background: #ffebee;
+                color: #d32f2f;
+            }
+        </style>

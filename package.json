@@ -1,0 +1,33 @@
+{
+  "name": "data-association-project",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "A modern web application for citizens to file and track complaints, and for government officials to manage and respond to them efficiently.",
+  "dependencies": {
+    "@google/generative-ai": "^0.2.1",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-ejs-layouts": "^2.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "nodemailer": "^6.10.1",
+    "socket.io": "^4.8.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasanth-42/VoiceUp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prasanth-42/VoiceUp/issues"
+  },
+  "homepage": "https://github.com/prasanth-42/VoiceUp#readme"
+}

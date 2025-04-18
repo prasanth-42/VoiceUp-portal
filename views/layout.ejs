@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %> - Government Portal
+    </title>
+    <link rel="stylesheet" href="/common.css">
+    <%- style %>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="container navbar-content">
+            <a href="/" class="navbar-brand">
+                <img src="/images/logo.jpg" alt="Logo" class="logo">
+                VoiceUp
+            </a>
+            
+            <nav class="navbar-links">
+                <a href="/">Home</a>
+                <% if (!locals.user) { %>
+                    <a href="/complaints">Complaints</a>
+                <% } else if (locals.user.role === 'CITIZEN') { %>
+                    <a href="/complaints">Complaints</a>
+                    <a href="/my-complaints">My Complaints</a>
+                <% } %>
+                
+                <% if (locals.user) { %>
+                    <% if (locals.user.role === 'ADMIN') { %>
+                        <a href="/admin">Admin Dashboard</a>
+                    <% } else if (locals.user.role === 'OFFICER') { %>
+                        <a href="/assigned-complaints">My Assigned Complaints</a>
+                    <% } %>
+                    <a href="/profile/<%= locals.user.username %>">Profile</a>
+                    <a href="/logout">Logout</a>
+                <% } else { %>
+                    <a href="/login">Login</a>
+                    <a href="/create">Sign Up</a>
+                <% } %>
+            </nav>
+            <!-- Google Translate Widget -->
+         <div id="google_translate_element" class="navbar-lan"></div>
+        </div>
+    </header>
+
+    <main class="container">
+        <%- body %>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">&copy; VoiceUP | All Rights Reserved</p>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+       <%- typeof script !== 'undefined' ? script : '' %>
+    <!-- Google Translate JS -->
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+            {  pageLanguage: 'en', // Original page language
+        includedLanguages: 'en,ta,hi,te,ml,mr,bn,kn,gu,pa', // Only English, Tamil, Hindi
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE },
+            'google_translate_element'
+        );
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+
+</html>
+

@@ -1,0 +1,43 @@
+*{
+    margin: 0px;
+    box-sizing: border-box;
+}
+.create{
+    width: 6rem;
+    height: 35px;
+    font-size:1rem;
+    margin-bottom: 2%;
+}
+
+.posts{
+    /* grid-template-rows: repeat(1,1fr);
+    grid-template-columns: repeat(4,1fr);
+    row-gap: 1rem;
+    column-gap: 1rem; */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.logout{
+    /* width: 100vw; */
+    flex-wrap: wrap;
+}
+
+/* .c
+{
+    height: 100%;
+    width: 100%;
+    padding: 0.4%;
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+    grid-template-rows: repeat(6,1fr);
+    gap: 1rem;
+    
+
+
+} */
+
+
+

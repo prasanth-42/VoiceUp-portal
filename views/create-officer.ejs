@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Officer Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+  <body class="bg-zinc-900 text-white" style = "background:#baf3f6c7; ;">
+    <div class="container mx-auto p-8" >
+        <h1 class="text-3xl font-bold mb-8" style="color: black;">Create Officer Account</h1>
+        <div class="form-container">
+            <% if (locals.error) { %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+            <% if (locals.success) { %>
+                <div class="alert alert-success"><%= success %></div>
+            <% } %>
+            <form action="/create-officer" method="POST" class="form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <select id="department" name="department" required class="form-input">
+                        <option value="">Select Department</option>
+                        <option value="INFRASTRUCTURE">Infrastructure</option>
+                        <option value="WATER_SUPPLY">Water Supply</option>
+                        <option value="ELECTRICITY">Electricity</option>
+                        <option value="SANITATION">Sanitation</option>
+                        <option value="HEALTHCARE">Healthcare</option>
+                        <option value="EDUCATION">Education</option>
+                        <option value="TRANSPORTATION">Transportation</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="state">State</label>
+                    <select id="state" name="state" required class="form-input">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <select id="city" name="city" required class="form-input" disabled>
+                        <option value="">Select City</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Officer</button>
+            </form>
+            <p class="form-footer">
+                <a href="/admin" class="link">Back to Dashboard</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA==';
+        const countryCode = 'IN'; // India
+
+        // Fetch states when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            const stateSelect = document.getElementById('state');
+            const citySelect = document.getElementById('city');
+
+            try {
+                const response = await fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states`, {
+                    headers: {
+                        'X-CSCAPI-KEY': apiKey
+                    }
+                });
+                const states = await response.json();
+
+                // Sort states alphabetically
+                states.sort((a, b) => a.name.localeCompare(b.name));
+
+                // Add states to select
+                states.forEach(state => {
+                    const option = document.createElement('option');
+                    option.value = state.iso2;
+                    option.textContent = state.name;
+                    stateSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching states:', error);
+            }
+
+            // Add event listener for state selection
+            stateSelect.addEventListener('change', async () => {
+                const selectedState = stateSelect.value;
+                citySelect.disabled = true;
+                citySelect.innerHTML = '<option value="">Select City</option>';
+
+                if (selectedState) {
+                    try {
+                        const response = await fetch(
+                            `https://api.countrystatecity.in/v1/countries/${countryCode}/states/${selectedState}/cities`,
+                            {
+                                headers: {
+                                    'X-CSCAPI-KEY': apiKey
+                                }
+                            }
+                        );
+                        const cities = await response.json();
+
+                        // Sort cities alphabetically
+                        cities.sort((a, b) => a.name.localeCompare(b.name));
+
+                        // Add cities to select
+                        cities.forEach(city => {
+                            const option = document.createElement('option');
+                            option.value = city.name;
+                            option.textContent = city.name;
+                            citySelect.appendChild(option);
+                        });
+
+                        citySelect.disabled = false;
+                    } catch (error) {
+                        console.error('Error fetching cities:', error);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+<%- contentFor('style') %>
+<style>
+.form-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+}
+
+.form-title {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.form-input {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--input-bg);
+    color: var(--text-color);
+    transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--text-color);
+}
+
+.link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background: var(--error-bg);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
+}
+
+.alert-success {
+    background: var(--success-bg);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+</style> 

@@ -1,0 +1,729 @@
+<%- contentFor('body') %>
+    <div class="complaint-container">
+        <div class="complaint-hero">
+            <div class="complaint-hero-content">
+                <h1 class="hero-title">File a Complaint</h1>
+                <p class="hero-subtitle">Submit your concerns and our AI will automatically route it to the appropriate
+                    department</p>
+            </div>
+        </div>
+
+        <% if (locals.error) { %>
+            <div class="alert alert-danger">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <%= error %>
+                </div>
+            </div>
+            <% } %>
+
+                <% if (locals.success) { %>
+                    <div class="alert alert-success">
+                        <div class="alert-icon">✅</div>
+                        <div class="alert-content">
+                            <%= success %>
+                        </div>
+                    </div>
+
+                    <% if (locals.schemeInfo && locals.schemeInfo.schemes && locals.schemeInfo.schemes.length> 0) { %>
+                        <div class="scheme-info-section">
+                            <h3 class="scheme-title">Relevant Government Schemes</h3>
+                            <p class="scheme-description">Based on your complaint, here are some government schemes that
+                                might help:</p>
+
+                            <% schemeInfo.schemes.forEach(scheme=> { %>
+                                <div class="scheme-card">
+                                    <h4 class="scheme-name">
+                                        <%= scheme.name %>
+                                    </h4>
+                                    <p class="scheme-desc">
+                                        <%= scheme.description %>
+                                    </p>
+                                    <p class="scheme-relevance"><strong>How it helps:</strong>
+                                        <%= scheme.relevance %>
+                                    </p>
+                                    <% if (scheme.link) { %>
+                                        <a href="<%= scheme.link %>" target="_blank" class="scheme-link">Learn more
+                                            about this scheme</a>
+                                        <% } %>
+                                </div>
+                                <% }); %>
+
+                                    <div class="scheme-actions">
+                                        <a href="/my-complaints" class="btn btn-primary">View My Complaints</a>
+                                    </div>
+                        </div>
+                        <% } %>
+                            <% } %>
+
+                                <div class="complaint-card">
+                                    <div class="complaint-card-header">
+                                        <div class="card-icon">🤖</div>
+                                        <h2 class="card-title">AI-Powered Complaint Form</h2>
+                                    </div>
+
+                                    <form action="/complaints" method="POST" class="complaint-form">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label for="title" class="form-label">Complaint Title</label>
+                                                <input type="text" id="title" name="title" class="form-input"
+                                                    placeholder="Enter a brief title for your complaint" required>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="state" class="form-label">State</label>
+                                                <select class="form-input" id="state" name="state" required>
+                                                    <option value="">Select State</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="city" class="form-label">City</label>
+                                                <select class="form-input" id="city" name="city" required disabled>
+                                                    <option value="">Select City</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="specific_location" class="form-label">Specific
+                                                    Location</label>
+                                                <input type="text" class="form-input" id="specific_location"
+                                                    name="specific_location"
+                                                    placeholder="Enter street address, landmark, or area" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea id="description" name="description"
+                                                class="form-input form-textarea" placeholder="Provide detailed information about your complaint. Our AI will analyze your description and automatically categorize it:
+                        
+- Infrastructure: For issues related to roads, bridges, buildings, and general city infrastructure
+- Water Supply: For issues related to water supply, quality, and distribution
+- Electricity: For issues related to power supply, street lights, electrical infrastructure
+- Sanitation: For issues related to garbage collection, waste management, and cleanliness
+- Healthcare: For issues related to hospitals, clinics, medical services, and public health
+- Education: For issues related to schools, colleges, educational facilities, and learning resources
+- Transportation: For issues related to public transport, traffic management, and vehicle-related services
+- Other: For any issues that don't fit into the above categories" rows="5" required></textarea>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn btn-primary">
+                                                <span class="btn-icon">🤖</span>
+                                                Submit with AI Categorization
+                                            </button>
+                                            <a href="/" class="btn btn-secondary">Cancel</a>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="process-steps">
+                                    <h3 class="steps-title">How Your Complaint is Processed</h3>
+                                    <div class="steps-container">
+                                        <div class="step">
+                                            <div class="step-icon-wrapper">
+                                                <div class="step-icon">
+                                                    <i class="fas fa-file-alt"></i>
+                                                </div>
+                                                <div class="step-line"></div>
+                                            </div>
+                                            <div class="step-content">
+                                                <h4>Submit Details</h4>
+                                                <p>Fill out the complaint form with detailed information about your
+                                                    issue</p>
+                                            </div>
+                                        </div>
+                                        <div class="step">
+                                            <div class="step-icon-wrapper">
+                                                <div class="step-icon">
+                                                    <i class="fas fa-robot"></i>
+                                                </div>
+                                                <div class="step-line"></div>
+                                            </div>
+                                            <div class="step-content">
+                                                <h4>AI Analysis</h4>
+                                                <p>Our AI system analyzes your complaint to understand the issue type
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="step">
+                                            <div class="step-icon-wrapper">
+                                                <div class="step-icon">
+                                                    <i class="fas fa-tasks"></i>
+                                                </div>
+                                                <div class="step-line"></div>
+                                            </div>
+                                            <div class="step-content">
+                                                <h4>Smart Routing</h4>
+                                                <p>Complaint is automatically routed to the appropriate department</p>
+                                            </div>
+                                        </div>
+                                        <div class="step">
+                                            <div class="step-icon-wrapper">
+                                                <div class="step-icon">
+                                                    <i class="fas fa-check-circle"></i>
+                                                </div>
+                                            </div>
+                                            <div class="step-content">
+                                                <h4>Resolution</h4>
+                                                <p>Track progress as officials work to resolve your complaint</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    </div>
+
+    <%- contentFor('style') %>
+        <style>
+            .complaint-container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 0 1rem;
+            }
+
+            .complaint-hero {
+                background: linear-gradient(135deg, #3f8d91 0%, #5a002f 100%);
+                border-radius: 8px;
+                padding: 2.5rem 2rem;
+                margin: 2rem 0;
+                color: white;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .complaint-hero:before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+                z-index: 0;
+            }
+
+            .complaint-hero-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+                opacity: 0.9;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .complaint-card {
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                padding: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .complaint-card-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #eaeaea;
+            }
+
+            .card-icon {
+                font-size: 2rem;
+                margin-right: 1rem;
+                color: #2c3e50;
+            }
+
+            .card-title {
+                font-size: 1.6rem;
+                font-weight: 600;
+                color: #2c3e50;
+                margin: 0;
+            }
+
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .form-label {
+                font-weight: 500;
+                color: #333;
+                font-size: 0.95rem;
+            }
+
+            .form-input {
+                padding: 0.8rem 1rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 1rem;
+                background-color: #f9f9f9;
+                transition: all 0.2s ease;
+                width: 100%;
+            }
+
+            .form-input:focus {
+                border-color: #3f8d91;
+                background-color: white;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(115, 0, 59, 0.1);
+            }
+
+            .form-input:disabled {
+                background-color: #e9ecef;
+                cursor: not-allowed;
+            }
+
+            select.form-input {
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 1rem center;
+                padding-right: 2.5rem;
+            }
+
+            .form-textarea {
+                resize: vertical;
+                min-height: 150px;
+                line-height: 1.6;
+            }
+
+            .custom-select {
+                position: relative;
+            }
+
+            .select-arrow {
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #777;
+                pointer-events: none;
+                font-size: 0.8rem;
+            }
+
+            .form-actions {
+                display: flex;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+                border-radius: 4px;
+                font-size: 1rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border: none;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .btn-primary {
+                background-color: #3f8d91;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background-color: #5a002f;
+            }
+
+            .btn-secondary {
+                background-color: #eee;
+                color: #333;
+            }
+
+            .btn-secondary:hover {
+                background-color: #ddd;
+            }
+
+            .process-steps {
+                background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                padding: 3rem 2rem;
+                margin: 3rem 0;
+                border: 1px solid rgba(115, 0, 59, 0.1);
+            }
+
+            .steps-title {
+                text-align: center;
+                margin: 0 0 3rem;
+                font-size: 1.8rem;
+                color: #3f8d91;
+                font-weight: 600;
+                position: relative;
+                padding-bottom: 1rem;
+            }
+
+            .steps-title:after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 60px;
+                height: 3px;
+                background: #3f8d91;
+                border-radius: 2px;
+            }
+
+            .steps-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2rem;
+                position: relative;
+                padding: 0 1rem;
+            }
+
+            .step {
+                text-align: center;
+                position: relative;
+            }
+
+            .step-icon-wrapper {
+                position: relative;
+                margin-bottom: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .step-icon {
+                width: 70px;
+                height: 70px;
+                background: #3f8d91;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 1.5rem;
+                position: relative;
+                z-index: 2;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(115, 0, 59, 0.2);
+            }
+
+            .step-line {
+                position: absolute;
+                top: 35px;
+                right: -50%;
+                width: 100%;
+                height: 3px;
+                background: #e9ecef;
+                z-index: 1;
+            }
+
+            .step:last-child .step-line {
+                display: none;
+            }
+
+            .step-content {
+                padding: 0 1rem;
+            }
+
+            .step-content h4 {
+                color: #3f8d91;
+                font-size: 1.2rem;
+                margin: 0 0 0.8rem;
+                font-weight: 600;
+            }
+
+            .step-content p {
+                color: #6c757d;
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin: 0;
+            }
+
+            .step:hover .step-icon {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(115, 0, 59, 0.3);
+            }
+
+            @media (max-width: 992px) {
+                .steps-container {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .step-line {
+                    width: 50%;
+                }
+
+                .step:nth-child(2) .step-line {
+                    display: none;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .steps-container {
+                    grid-template-columns: 1fr;
+                }
+
+                .step-line {
+                    width: 3px;
+                    height: 50px;
+                    top: 70px;
+                    right: auto;
+                    left: 35px;
+                }
+
+                .step {
+                    text-align: left;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 1.5rem;
+                }
+
+                .step-icon-wrapper {
+                    margin-bottom: 0;
+                }
+
+                .step-content {
+                    padding: 0;
+                }
+
+                .steps-title {
+                    font-size: 1.5rem;
+                    margin-bottom: 2rem;
+                }
+            }
+
+            .alert {
+                display: flex;
+                align-items: center;
+                padding: 1rem;
+                border-radius: 4px;
+                margin-bottom: 1.5rem;
+            }
+
+            .alert-danger {
+                background-color: #fdf7f7;
+                color: #a94442;
+                border: 1px solid #ebccd1;
+            }
+
+            .alert-icon {
+                margin-right: 0.75rem;
+                font-size: 1.25rem;
+            }
+
+            .alert-content {
+                flex: 1;
+            }
+
+            .scheme-info-section {
+                background: #f8f9fa;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 20px 0;
+                border: 1px solid #e9ecef;
+            }
+
+            .scheme-title {
+                color: #2c3e50;
+                margin-bottom: 10px;
+            }
+
+            .scheme-description {
+                color: #6c757d;
+                margin-bottom: 20px;
+            }
+
+            .scheme-card {
+                background: white;
+                border-radius: 8px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                border-left: 4px solid #007bff;
+            }
+
+            .scheme-name {
+                color: #007bff;
+                margin: 0 0 10px 0;
+            }
+
+            .scheme-desc {
+                color: #495057;
+                margin-bottom: 10px;
+            }
+
+            .scheme-relevance {
+                color: #6c757d;
+                font-size: 0.9rem;
+                margin-bottom: 10px;
+            }
+
+            .scheme-link {
+                display: inline-block;
+                color: #007bff;
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            .scheme-link:hover {
+                text-decoration: underline;
+            }
+
+            .scheme-actions {
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            .chat-widget {
+                /* Add any necessary styles for the chat widget */
+            }
+
+            @media (max-width: 768px) {
+                .hero-title {
+                    font-size: 2rem;
+                }
+
+                .hero-subtitle {
+                    font-size: 1rem;
+                }
+
+                .form-actions {
+                    flex-direction: column;
+                }
+
+                .steps-container {
+                    flex-direction: column;
+                    gap: 2rem;
+                }
+
+                .steps-container:before {
+                    display: none;
+                }
+
+                .step-number {
+                    margin-bottom: 0.5rem;
+                }
+
+                .form-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .section-icon {
+                font-size: 2rem;
+                color: #3f8d91;
+                flex-shrink: 0;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+                font-weight: 600;
+                color: #3f8d91;
+                margin: 0 0 1rem;
+            }
+
+            .btn-icon {
+                margin-right: 8px;
+            }
+
+            .alert-success {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .alert-success .alert-icon {
+                color: #28a745;
+            }
+        </style>
+
+        <script>
+            const apiKey = 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA==';
+            const countryCode = 'IN'; // India
+
+            // Fetch states when page loads
+            document.addEventListener('DOMContentLoaded', async () => {
+                const stateSelect = document.getElementById('state');
+                const citySelect = document.getElementById('city');
+
+                try {
+                    const response = await fetch(`https://api.countrystatecity.in/v1/countries/${countryCode}/states`, {
+                        headers: {
+                            'X-CSCAPI-KEY': apiKey
+                        }
+                    });
+                    const states = await response.json();
+
+                    // Sort states alphabetically
+                    states.sort((a, b) => a.name.localeCompare(b.name));
+
+                    // Add states to select
+                    states.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.iso2;
+                        option.textContent = state.name;
+                        stateSelect.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error fetching states:', error);
+                }
+
+                // Add event listener for state selection
+                stateSelect.addEventListener('change', async () => {
+                    const selectedState = stateSelect.value;
+                    citySelect.disabled = true;
+                    citySelect.innerHTML = '<option value="">Select City</option>';
+
+                    if (selectedState) {
+                        try {
+                            const response = await fetch(
+                                `https://api.countrystatecity.in/v1/countries/${countryCode}/states/${selectedState}/cities`,
+                                {
+                                    headers: {
+                                        'X-CSCAPI-KEY': apiKey
+                                    }
+                                }
+                            );
+                            const cities = await response.json();
+
+                            // Sort cities alphabetically
+                            cities.sort((a, b) => a.name.localeCompare(b.name));
+
+                            // Add cities to select
+                            cities.forEach(city => {
+                                const option = document.createElement('option');
+                                option.value = city.name;
+                                option.textContent = city.name;
+                                citySelect.appendChild(option);
+                            });
+
+                            citySelect.disabled = false;
+                        } catch (error) {
+                            console.error('Error fetching cities:', error);
+                        }
+                    }
+                });
+            });
+        </script>

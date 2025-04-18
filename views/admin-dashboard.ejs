@@ -1,0 +1,758 @@
+<%- contentFor('body') %>
+    <div class="admin-dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="page-title">Admin Dashboard</h1>
+            <div class="dashboard-actions">
+                <a href="/create-officer" class="btn btn-primary">
+                    <span class="btn-icon">👮</span>
+                    Add Officer
+                </a>
+            </div>
+            <div class="dashboard-stats">
+                <div class="stat-card" onclick="window.location.href='/officers'" style="cursor: pointer;">
+                    <div class="stat-content">
+                        <div class="stat-icon">👮</div>
+                        <div class="stat-info">
+                            <div class="stat-value">
+                                <%= officers.length %>
+                            </div>
+                            <div class="stat-label">Officers</div>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar"
+                            style="width: <%= (officers.length / (officers.length + citizens.length)) * 100 %>%"></div>
+                    </div>
+                </div>
+                <div class="stat-card" onclick="window.location.href='/citizens'" style="cursor: pointer;">
+                    <div class="stat-content">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <div class="stat-value">
+                                <%= citizens.length %>
+                            </div>
+                            <div class="stat-label">Citizens</div>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar"
+                            style="width: <%= (citizens.length / (officers.length + citizens.length)) * 100 %>%"></div>
+                    </div>
+                </div>
+                <div class="stat-card" onclick="window.location.href='/admin-complaints'" style="cursor: pointer;">
+                    <div class="stat-content">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-info">
+                            <div class="stat-value">
+                                <%= complaints.length %>
+                            </div>
+                            <div class="stat-label">Total Complaints</div>
+                        </div>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="progress-bar"
+                            style="width: <%= Math.min((complaints.length / (officers.length + citizens.length)) * 100, 100) %>%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <% if (locals.error) { %>
+            <div class="alert alert-danger">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <%= error %>
+                </div>
+            </div>
+            <% } %>
+
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2>Recent Complaints</h2>
+                        <a href="/admin-complaints" class="btn btn-primary">View All Complaints</a>
+                    </div>
+
+                    <% if (complaints && complaints.length> 0) { %>
+                        <div class="complaints-grid">
+                            <% complaints.forEach(complaint=> { %>
+                                <div class="complaint-card" data-category="<%= complaint.category %>"
+                                    data-status="<%= complaint.status %>">
+                                    <div class="complaint-header">
+                                        <div class="category-badge">
+                                            <%= complaint.category.replace('_', ' ' ) %>
+                                        </div>
+                                        <div class="status-badge <%= complaint.status.toLowerCase() %>">
+                                            <%= complaint.status %>
+                                        </div>
+                                    </div>
+
+                                    <h3 class="complaint-title">
+                                        <%= complaint.title %>
+                                    </h3>
+                                    <p class="complaint-location">
+                                        <span class="location-icon">📍</span>
+                                        <%= complaint.location %>
+                                    </p>
+                                    <p class="complaint-description">
+                                        <%= complaint.description %>
+                                    </p>
+
+                                    <div class="complaint-footer">
+                                        <div class="priority-badge <%= complaint.priority.toLowerCase() %>">
+                                            <%= complaint.priority %>
+                                        </div>
+                                        <div class="complaint-date">
+                                            Filed on: <%= new Date(complaint.createdAt).toLocaleDateString() %>
+                                        </div>
+                                    </div>
+
+                                    <div class="officer-assignment">
+                                        <p class="assigned-officer">
+                                            <span class="officer-icon">👮</span>
+                                            <% if (complaint.assignedOfficer) { %>
+                                                Assigned to: <%= complaint.assignedOfficer.username || 'Officer' %>
+                                            <% } else { %>
+                                                Not assigned
+                                            <% } %>
+                                        </p>
+                                        <form action="/assign-officer" method="POST" class="assign-form">
+                                            <input type="hidden" name="complaintId" value="<%= complaint._id %>">
+                                            <select name="officerId" class="officer-select">
+                                                <option value="">Select Officer</option>
+                                                <% officers.forEach(officer => { %>
+                                                    <option value="<%= officer._id %>" 
+                                                        <%= complaint.assignedOfficer && complaint.assignedOfficer._id.toString() === officer._id.toString() ? 'selected' : '' %>>
+                                                        <%= officer.username %> (<%= officer.department %>)
+                                                    </option>
+                                                <% }); %>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+                                        </form>
+                                    </div>
+
+                                    <div class="admin-actions">
+                                        <form action="/update-complaint-status" method="POST" class="status-form">
+                                            <input type="hidden" name="complaintId" value="<%= complaint._id %>">
+                                            <select name="status" class="status-select">
+                                                <option value="PENDING" <%=complaint.status==='PENDING' ? 'selected'
+                                                    : '' %>>Pending</option>
+                                                <option value="PROCESSING" <%=complaint.status==='PROCESSING'
+                                                    ? 'selected' : '' %>>Processing</option>
+                                                <option value="RESOLVED" <%=complaint.status==='RESOLVED' ? 'selected'
+                                                    : '' %>>Resolved</option>
+                                                <option value="REJECTED" <%=complaint.status==='REJECTED' ? 'selected'
+                                                    : '' %>>Rejected</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary btn-sm">Update Status</button>
+                                        </form>
+                                        <a href="/complaint/<%= complaint._id %>" class="btn btn-secondary btn-sm">View
+                                            Details</a>
+                                    </div>
+                                </div>
+                                <% }); %>
+                        </div>
+                        <% } else { %>
+                            <div class="no-complaints">
+                                <div class="no-complaints-icon">📭</div>
+                                <h3>No Complaints Found</h3>
+                                <p>There are no complaints in the system at this time.</p>
+                            </div>
+                            <% } %>
+                </div>
+    </div>
+    <div class="charts-container">
+        <div class="chart-section">
+            <h2>Complaint Status Distribution</h2>
+            <div class="chart-container">
+                <canvas id="complaintStatusChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <div class="chart-section">
+            <h2>Complaint Status Distribution</h2>
+            <div class="chart-container">
+                <canvas id="complaintCategoryChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+    <%- contentFor('style') %>
+        <style>
+            .admin-dashboard-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem 1rem;
+            }
+
+            .dashboard-header {
+                margin-bottom: 2rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+                color: #2c3e50;
+                margin: 0 0 1.5rem;
+            }
+
+            .dashboard-stats {
+                display: flex;
+                gap: 1.5rem;
+                margin-bottom: 2rem;
+                padding: 0.5rem;
+            }
+
+            .stat-card {
+                flex: 1;
+                background: white;
+                border-radius: 16px;
+                padding: 1.5rem;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                transition: all 0.3s ease;
+                border: 1px solid rgba(0, 0, 0, 0.05);
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .stat-content {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            .stat-icon {
+                font-size: 2.5rem;
+                background: #f8f9fa;
+                width: 60px;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 12px;
+                color: #3f8d91;
+            }
+
+            .stat-info {
+                flex: 1;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+                font-weight: 700;
+                color: #2c3e50;
+                line-height: 1.2;
+            }
+
+            .stat-label {
+                color: #666;
+                font-size: 0.9rem;
+                font-weight: 500;
+                margin-top: 0.25rem;
+            }
+
+            .stat-progress {
+                height: 4px;
+                background: #f1f3f5;
+                border-radius: 2px;
+                overflow: hidden;
+            }
+
+     
+
+            .progress-bar {
+                height: 100%;
+                background: #3f8d91;
+                border-radius: 2px;
+                transition: width 0.3s ease;
+            }
+
+            .dashboard-section {
+                background: white;
+                border-radius: 8px;
+                padding: 1.5rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.5rem;
+                color: #2c3e50;
+                margin: 0;
+            }
+
+            .complaints-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .complaint-card {
+                background: white;
+                border-radius: 8px;
+                padding: 1.5rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .complaint-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .category-badge {
+                background: #e3f2fd;
+                color: #1976d2;
+                padding: 0.25rem 0.75rem;
+                border-radius: 12px;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .status-badge {
+                padding: 0.25rem 0.75rem;
+                border-radius: 12px;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .status-badge.pending {
+                background: #fff3e0;
+                color: #f57c00;
+            }
+
+            .status-badge.in-progress {
+                background: #e3f2fd;
+                color: #1976d2;
+            }
+
+            .status-badge.resolved {
+                background: #e8f5e9;
+                color: #388e3c;
+            }
+
+            .complaint-title {
+                font-size: 1.25rem;
+                color: #2c3e50;
+                margin: 0;
+            }
+
+            .complaint-location {
+                color: #666;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin: 0;
+            }
+
+            .complaint-description {
+                color: #444;
+                margin: 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .complaint-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: auto;
+            }
+
+            .priority-badge {
+                padding: 0.25rem 0.75rem;
+                border-radius: 12px;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .priority-badge.low {
+                background: #e8f5e9;
+                color: #388e3c;
+            }
+
+            .priority-badge.medium {
+                background: #fff3e0;
+                color: #f57c00;
+            }
+
+            .priority-badge.high {
+                background: #ffebee;
+                color: #d32f2f;
+            }
+
+            .complaint-date {
+                color: #666;
+                font-size: 0.85rem;
+            }
+
+            .admin-actions {
+                display: flex;
+                gap: 0.5rem;
+                margin-top: 1rem;
+            }
+
+            .status-form {
+                display: flex;
+                gap: 0.5rem;
+                flex: 1;
+            }
+
+            .status-select {
+                flex: 1;
+                padding: 0.5rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn-primary {
+                background-color: #3f8d91;
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background-color: #5a002f;
+            }
+
+            .btn-secondary {
+                background-color: #eee;
+                color: #333;
+            }
+
+            .btn-secondary:hover {
+                background-color: #ddd;
+            }
+
+            .btn-sm {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .no-complaints {
+                text-align: center;
+                padding: 3rem;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .no-complaints-icon {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+            .no-complaints h3 {
+                color: #2c3e50;
+                margin: 0 0 0.5rem;
+            }
+
+            .no-complaints p {
+                color: #666;
+                margin: 0 0 1.5rem;
+            }
+
+            @media (max-width: 768px) {
+                .dashboard-stats {
+                    flex-direction: column;
+                }
+
+                .stat-card {
+                    width: 100%;
+                }
+            }
+
+            .dashboard-actions {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .dashboard-actions .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.75rem 1.5rem;
+                font-size: 1rem;
+                font-weight: 500;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .dashboard-actions .btn-primary {
+                background-color: #3f8d91;
+                color: white;
+                border: none;
+            }
+
+            .dashboard-actions .btn-primary:hover {
+                background-color: #5a002f;
+                transform: translateY(-2px);
+            }
+
+            .btn-icon {
+                font-size: 1.2rem;
+            }
+
+            .alert {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem 1rem;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                animation: slideIn 0.3s ease-out;
+            }
+
+            .alert-success {
+                background-color: #e8f5e9;
+                color: #2e7d32;
+                border: 1px solid #a5d6a7;
+            }
+
+            .alert-danger {
+                background-color: #ffebee;
+                color: #c62828;
+                border: 1px solid #ef9a9a;
+            }
+
+            .alert-icon {
+                font-size: 1.25rem;
+            }
+
+            .alert-content {
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            @keyframes slideIn {
+                from {
+                    transform: translateY(-10px);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            .officer-assignment {
+                margin: 1rem 0;
+                padding: 0.75rem;
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                border: 1px solid #e9ecef;
+            }
+            
+            .assigned-officer {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 0.5rem;
+                font-size: 0.9rem;
+                color: #495057;
+            }
+            
+            .officer-icon {
+                color: #3f8d91;
+            }
+            
+            .assign-form {
+                display: flex;
+                gap: 0.5rem;
+                width: 100px;
+            }
+            
+            .officer-select {
+                flex: 1;
+                padding: 0.5rem;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                width: 200px;
+            }
+
+            .charts-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 2rem;
+                justify-content: center;
+                margin-bottom: 2rem;
+                background-color: #ffffff;
+                border-radius: 20px;
+            }
+        
+            .chart-section {
+                flex: 1;
+                min-width: 300px;
+                max-width: 400px;
+            }
+        
+            .chart-section h2 {
+                font-size: 1.5rem;
+                color: #2c3e50;
+                margin-bottom: 1rem;
+                text-align: center;
+            }
+        
+            .chart-container {
+                width: 100%;
+                height: 400px;
+            }
+        
+            @media (max-width: 768px) {
+                .charts-container {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                .chart-section {
+                    max-width: 400px;
+                }
+            }
+        
+            #complaintStatusChart {
+                display: block !important;
+                width: 100% !important;
+                height: 100% !important;
+        }
+        
+            #categoryPieChart {
+            
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+        }        
+        </style>
+
+        <%- contentFor('script') %>
+        <script>
+            console.log('Script loaded');
+            document.addEventListener('DOMContentLoaded', function () {
+                try {
+                    // Parse statusData for pie chart
+                    const statusData = <%- JSON.stringify(statusData) %>;
+                    console.log("Chart Data (Status):", statusData);
+        
+                    // Parse categoryData for doughnut chart
+                    const categoryData = <%- JSON.stringify(categoryData) %>;
+                    console.log("Chart Data (Category):", categoryData);
+        
+                    // Pie Chart (Complaint Status)
+                    const statusCanvas = document.getElementById('complaintStatusChart');
+                    if (!statusCanvas) {
+                        console.error("Status Canvas not found!");
+                        return;
+                    }
+                    const statusCtx = statusCanvas.getContext('2d');
+                    if (!statusCtx) {
+                        console.error("Status Canvas context not available!");
+                        return;
+                    }
+                    new Chart(statusCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Pending', 'Processing', 'Resolved', 'Rejected'],
+                            datasets: [{
+                                data: [
+                                    statusData.PENDING || 0,
+                                    statusData.PROCESSING || 0,
+                                    statusData.RESOLVED || 0,
+                                    statusData.REJECTED || 0
+                                ],
+                                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { font: { size: 14 } }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            return `${context.label}: ${context.raw}`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+        
+                    // Doughnut Chart (Complaint Categories)
+                    const categoryCanvas = document.getElementById('complaintCategoryChart');
+                    if (!categoryCanvas) {
+                        console.error("Category Canvas not found!");
+                        return;
+                    }
+                    const categoryCtx = categoryCanvas.getContext('2d');
+                    if (!categoryCtx) {
+                        console.error("Category Canvas context not available!");
+                        return;
+                    }
+                    new Chart(categoryCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: Object.keys(categoryData),
+                            datasets: [{
+                                data: Object.values(categoryData),
+                                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { font: { size: 14 } }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            return `${context.label}: ${context.raw} complaints`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error("Chart Error:", error);
+                }
+            });
+        </script>

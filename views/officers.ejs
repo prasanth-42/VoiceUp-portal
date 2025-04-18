@@ -1,0 +1,285 @@
+<%- contentFor('body') %>
+<div class="officers-container">
+    <div class="officers-header">
+        <h1 class="page-title">All Officers</h1>
+        <div class="officers-actions">
+            <a href="/create-officer" class="btn btn-primary">
+                <span class="btn-icon">👮</span>
+                Add Officer
+            </a>
+            <a href="/admin" class="btn btn-secondary">
+                <span class="btn-icon">←</span>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <% if (locals.error) { %>
+        <div class="alert alert-danger">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <%= error %>
+            </div>
+        </div>
+    <% } %>
+
+    <% if (officers && officers.length > 0) { %>
+        <div class="officers-grid">
+            <% officers.forEach(officer => { %>
+                <div class="officer-card">
+                    <div class="officer-header">
+                        <div class="department-badge">
+                            <%= officer.department ? officer.department.replace('_', ' ') : 'No Department' %>
+                        </div>
+                    </div>
+
+                    <h3 class="officer-name">
+                        <%= officer.username %>
+                    </h3>
+                    <p class="officer-email">
+                        <span class="email-icon">📧</span>
+                        <%= officer.email %>
+                    </p>
+                    <p class="officer-location">
+                        <span class="location-icon">📍</span>
+                        <%= officer.city %>, <%= officer.state %>
+                    </p>
+
+                    <div class="officer-actions">
+                        <a href="/profile/<%= officer.username %>" class="btn btn-primary btn-sm">View Profile</a>
+                        <form action="/delete-user/<%= officer._id %>" method="POST" 
+                            onsubmit="return confirm('Are you sure you want to delete this officer?');">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="no-officers">
+            <div class="no-officers-icon">👮</div>
+            <h3>No Officers Found</h3>
+            <p>There are no officers in the system at this time.</p>
+            <a href="/create-officer" class="btn btn-primary">Add First Officer</a>
+        </div>
+    <% } %>
+</div>
+
+<%- contentFor('style') %>
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .officers-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        background-color: #f5f7fa;
+    }
+
+    .officers-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-size: 2.4rem;
+        color: #1d2d44;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .officers-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .officers-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+
+    .officer-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .officer-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .officer-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .department-badge {
+        display: inline-block;
+        background-color: #1f3a55;
+        color: #fff;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.3rem 1rem;
+        border-radius: 30px;
+        text-transform: uppercase;
+    }
+
+    .officer-name {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #2d3e50;
+        margin: 0.5rem 0;
+    }
+
+    .officer-email, .officer-location {
+        font-size: 1rem;
+        color: #5f6a77;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0.3rem 0;
+    }
+
+    .email-icon, .location-icon {
+        color: #1f3a55;
+    }
+
+    .officer-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e0e5ec;
+    }
+
+    .officer-actions .btn {
+        flex: 1;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .no-officers {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .no-officers-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        color: #c4c4c4;
+    }
+
+    .no-officers h3 {
+        color: #1f2937;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .no-officers p {
+        color: #6b7280;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert {
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background-color: #fff6f6;
+        border-left: 4px solid #f87171;
+    }
+
+    .alert-danger {
+        background-color: #fbe5e5;
+        color: #991b1b;
+    }
+
+    .alert-icon {
+        font-size: 1.5rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-primary {
+        background-color: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #1d4ed8;
+    }
+
+    .btn-secondary {
+        background-color: #e5e7eb;
+        color: #1f2937;
+    }
+
+    .btn-secondary:hover {
+        background-color: #d1d5db;
+    }
+
+    .btn-danger {
+        background-color: #dc2626;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #b91c1c;
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+        .officers-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .officers-actions {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .officers-actions .btn {
+            width: 100%;
+        }
+
+        .officers-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

@@ -1,0 +1,258 @@
+<%- contentFor('body') %>
+<div class="status-container">
+    <h1 class="status-title">Application Status</h1>
+
+    <div class="status-filters">
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by application ID...">
+            <button class="btn btn-primary" onclick="searchApplications()">Search</button>
+        </div>
+        <div class="filter-options">
+            <select id="statusFilter" class="filter-select" onchange="filterApplications()">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="applications-grid">
+        <% applications.forEach(function(app) { %>
+            <div class="application-card" data-status="<%= app.status %>">
+                <div class="application-header">
+                    <h2 class="application-title"><%= app.type %></h2>
+                    <span class="status-badge status-<%= app.status %>"><%= app.status %></span>
+                </div>
+                <div class="application-details">
+                    <div class="detail-group">
+                        <label class="detail-label">Application ID</label>
+                        <p class="detail-value"><%= app.id %></p>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">Submitted On</label>
+                        <p class="detail-value"><%= app.submittedDate %></p>
+                    </div>
+                    <div class="detail-group">
+                        <label class="detail-label">Last Updated</label>
+                        <p class="detail-value"><%= app.lastUpdated %></p>
+                    </div>
+                </div>
+                <div class="application-actions">
+                    <a href="/applications/<%= app.id %>" class="btn btn-primary">View Details</a>
+                    <% if (app.status === 'pending') { %>
+                        <button class="btn btn-secondary" onclick="cancelApplication('<%= app.id %>')">Cancel</button>
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
+    <div class="no-results" style="display: none;">
+        <p class="no-results-text">No applications found matching your criteria.</p>
+    </div>
+</div>
+
+<%- contentFor('style') %>
+<style>
+.status-container {
+    padding: 2rem;
+}
+
+.status-title {
+    color: var(--text-color);
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.status-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--input-bg);
+    color: var(--text-color);
+}
+
+.filter-select {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--input-bg);
+    color: var(--text-color);
+    min-width: 200px;
+}
+
+.applications-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.application-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+}
+
+.application-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.application-title {
+    color: var(--text-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-pending {
+    background: var(--warning-bg);
+    color: var(--warning-color);
+}
+
+.status-in-progress {
+    background: var(--info-bg);
+    color: var(--info-color);
+}
+
+.status-completed {
+    background: var(--success-bg);
+    color: var(--success-color);
+}
+
+.status-rejected {
+    background: var(--error-bg);
+    color: var(--error-color);
+}
+
+.application-details {
+    margin-bottom: 1.5rem;
+}
+
+.detail-group {
+    margin-bottom: 0.75rem;
+}
+
+.detail-label {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.detail-value {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.application-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    margin-top: 2rem;
+}
+
+.no-results-text {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+}
+
+@media (max-width: 768px) {
+    .status-title {
+        font-size: 2rem;
+    }
+
+    .status-filters {
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    .application-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+function searchApplications() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const applications = document.querySelectorAll('.application-card');
+    let hasResults = false;
+
+    applications.forEach(app => {
+        const appId = app.querySelector('.detail-value').textContent.toLowerCase();
+        if (appId.includes(searchTerm)) {
+            app.style.display = 'block';
+            hasResults = true;
+        } else {
+            app.style.display = 'none';
+        }
+    });
+
+    document.querySelector('.no-results').style.display = hasResults ? 'none' : 'block';
+}
+
+function filterApplications() {
+    const status = document.getElementById('statusFilter').value;
+    const applications = document.querySelectorAll('.application-card');
+    let hasResults = false;
+
+    applications.forEach(app => {
+        if (status === 'all' || app.dataset.status === status) {
+            app.style.display = 'block';
+            hasResults = true;
+        } else {
+            app.style.display = 'none';
+        }
+    });
+
+    document.querySelector('.no-results').style.display = hasResults ? 'none' : 'block';
+}
+
+function cancelApplication(appId) {
+    if (confirm('Are you sure you want to cancel this application?')) {
+        // Add your cancel application logic here
+        console.log('Cancelling application:', appId);
+    }
+}
+</script> 
