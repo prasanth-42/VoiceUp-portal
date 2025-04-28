@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser');
 const { verify } = require('crypto');
 const mongoose = require('mongoose');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const serverless = require('serverless-http'); 
 require('dotenv').config();
 
 const path = require('path');
@@ -1167,12 +1168,13 @@ app.get('/assigned-complaints', isLoggedIn, isOfficer, async (req, res) => {
     });
   }
 });
-const PORT = process.env.PORT || 4002;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-
 
 module.exports = app;
+module.exports.handler = serverless(app);
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 4002;
+  app.listen(PORT, () => {
+    console.log(`Server running locally at http://localhost:${PORT}`);
+  });
+}
